@@ -43,7 +43,7 @@ For each top-level Collection, it will ask you whether you want to continue with
 
 - If the directory is named `*.lrdevplugin` then it is treated as a directory by OSX (`*.lrplugin` is treated as a package).
 
-- Changes to `Info.lua` require reloading the plug-in (in the `Plug-in Manager`)
+- Changes to `Info.lua` (but not `rename.lua`) require reloading the plug-in (in the `Plug-in Manager`)
 
 - Helpful resources:
   - https://www.adobe.io/apis/creativecloud/lightroomclassic.htm

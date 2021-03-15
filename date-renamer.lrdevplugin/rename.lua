@@ -9,7 +9,6 @@ year-month-day_to_year-month-day_description.
 -- Import Lightroom namespaces - each returns a constructor function
 local LrApplication = import 'LrApplication'
 local LrDialogs = import 'LrDialogs'
-local LrErrors = import 'LrErrors'
 local LrTasks = import 'LrTasks'
 
 -- Utilities to uniformly format parts of dates
@@ -87,17 +86,22 @@ local function main ()
         local newname = create_collection_newname(name)
 
         if not newname then
-            LrDialogs.message('Cannot parse collection ' .. name .. ', skipping')
+            LrDialogs.message('Cannot parse Collection ' .. name .. ', skipping')
 
         else
             -- Dialog for user to confirm rename, or quit entire process
-            local message = "Renaming " .. name .. " to " .. newname
+            local message = "Renaming\n" .. name .. "\nto\n" .. newname
             local rename_verb = 'Rename'  -- action = 'ok'
-            local skip_verb = 'Skip' -- action = 'cancel'
-            local quit_verb = 'Stop renaming loop' -- action = 'other'
+            local skip_verb = 'Skip this Collection' -- action = 'cancel'
+            local quit_verb = 'Quit renaming' -- action = 'other'
             local action = LrDialogs.confirm(message, nil, rename_verb, skip_verb, quit_verb)
             if action == 'ok' then
-                local a = "1"
+                catalog:withWriteAccessDo("Rename Collection", function()
+                    local rename_result = coll:setName(newname)
+                    if not rename_result then
+                        LrDialogs.showError("Cannot rename " .. name .. " to " .. newname .. " - already exists!")
+                    end
+                end)
             elseif action == 'other' then
                 break
             end
